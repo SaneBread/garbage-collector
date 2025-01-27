@@ -57,7 +57,6 @@ import {
   set,
   Snapper,
   SourceTerminal,
-  StrictMacro,
   sum,
   TrainSet,
   undelay,
@@ -1114,6 +1113,14 @@ export const BarfTurnQuest: Quest<GarboTask> = {
         ) {
           retrieveItem($item`human musk`);
         }
+        if (
+          SourceTerminal.have() &&
+          !["sourceTerminalEducate1", "sourceTerminalEducate2"].every((e) =>
+            ["extract.edu", "digitize.edu"].includes(e),
+          )
+        ) {
+          SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
+        }
       },
       completed: () => myAdventures() === 0,
       outfit: () => {
@@ -1174,7 +1181,10 @@ export const BarfTurnQuest: Quest<GarboTask> = {
             $monster`waiter dressed as a ninja`,
             Macro.tryItem($item`human musk`),
           )
-          .if_($monster`Mob Penguin Capo`, Macro.meatKill())
+          .if_(
+            $monster`Mob Penguin Capo`,
+            Macro.trySkill($skill`Extract`).meatKill(),
+          )
           .if_($monster`sausage goblin`, Macro.meatKill())
           .meatKill();
       }),
