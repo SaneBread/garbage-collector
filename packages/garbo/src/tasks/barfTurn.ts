@@ -7,6 +7,7 @@ import {
   canEquip,
   eat,
   getWorkshed,
+  inebrietyLimit,
   Item,
   itemAmount,
   Location,
@@ -56,6 +57,7 @@ import {
   set,
   Snapper,
   SourceTerminal,
+  StrictMacro,
   sum,
   TrainSet,
   undelay,
@@ -1100,6 +1102,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
     },
     {
       name: "Penguin",
+      // after:["Set up Penguin Banishes"],
       ready: () => globalOptions.penguin,
       prepare: () => {
         meatMood().execute(estimatedGarboTurns());
@@ -1124,6 +1127,16 @@ export const BarfTurnQuest: Quest<GarboTask> = {
         ) {
           outfits.equip($item`Everfull Dart Holster`);
         }
+        if (get("_batWingsFreeFights") < 5) {
+          outfits.equip($item`bat wings`);
+        }
+        if (myInebriety() > inebrietyLimit()) {
+          outfits.equip($item`Drunkula's wineglass`);
+        } else if (kramcoGuaranteed()) {
+          outfits.equip($item`Kramco Sausage-o-Matic™`);
+        } else {
+          outfits.equip($item`carnivorous potted plant`);
+        }
         if (
           getMonstersToBanish().includes($monster`ninja dressed as a waiter`)
         ) {
@@ -1146,6 +1159,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
           .if_(
             $monster`Copperhead Club bartender`,
             Macro.trySkill($skill`Monkey Slap`)
+              .trySkill($skill`Clobber`)
               .trySkill($skill`Unleash Nanites`)
               .tryItem($item`shadow brick`)
               .runaway(),

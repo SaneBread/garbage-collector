@@ -870,7 +870,7 @@ const DailyTasks: GarboTask[] = [
   },
   {
     name: "Set up Penguin Banishes",
-    ready: () => globalOptions.penguin,
+    ready: () => globalOptions.penguin && myInebriety() <= inebrietyLimit(),
     completed: () => getMonstersToBanish().length === 0,
     do: () => $location`The Copperhead Club`,
     prepare: () => {
@@ -930,9 +930,11 @@ const DailyTasks: GarboTask[] = [
         .if_(
           $monster`Copperhead Club bartender`,
           Macro.trySkill($skill`Monkey Slap`)
+            .trySkill($skill`Clobber`)
             .trySkill($skill`Unleash Nanites`)
-            .tryItem($item`shadow brick`)
-            .runaway(),
+            .abort(),
+          // .tryItem($item`shadow brick`)
+          // .runaway(),
         )
         .if_(
           $monster`ninja dressed as a waiter`,
