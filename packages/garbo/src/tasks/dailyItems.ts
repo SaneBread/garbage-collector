@@ -9,6 +9,8 @@ import {
   getClanLounge,
   getMonsters,
   inebrietyLimit,
+  isDiscardable,
+  isTradeable,
   Item,
   itemAmount,
   itemDropsArray,
@@ -714,14 +716,14 @@ const DailyItemTasks: GarboTask[] = [
     ready: () => have($item`candy egg deviler`),
     completed: () => get("_candyEggsDeviled") >= 3,
     do: () => {
-      const bestCandyArray = Item.all().filter((i) => i.candy && i.tradeable);
-      const bestCandy = maxBy(bestCandyArray, mallPrice, true);
+      const bestCandyArray = Item.all().filter(
+        (i) => i.candy && have(i, 3) && isTradeable(i) && !isDiscardable(i),
+      );
+      const bestCandy = maxBy(bestCandyArray, (it) => -1 * mallPrice(it));
       visitUrl(`inventory.php?action=eggdevil&pwd`);
-      let eggsDeviled = get("_candyEggsDeviled");
-      while (eggsDeviled < 3) {
-        visitUrl(`choice.php?a=${bestCandy}&whichchoice=1544&option=1&pwd`);
-        eggsDeviled++;
-      }
+      visitUrl(`choice.php?a=${bestCandy.id}&whichchoice=1544&option=1&pwd`);
+      visitUrl(`choice.php?a=${bestCandy.id}&whichchoice=1544&option=1&pwd`);
+      visitUrl(`choice.php?a=${bestCandy.id}&whichchoice=1544&option=1&pwd`);
     },
     spendsTurn: false,
   },
