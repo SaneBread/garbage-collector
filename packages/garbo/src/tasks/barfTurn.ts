@@ -1101,7 +1101,6 @@ export const BarfTurnQuest: Quest<GarboTask> = {
     },
     {
       name: "Penguin",
-      // after:["Set up Penguin Banishes"],
       ready: () => globalOptions.penguin,
       prepare: () => {
         meatMood().execute(estimatedGarboTurns());
@@ -1127,6 +1126,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
         const outfits = barfOutfit({
           familiar: $familiar`Red-Nosed Snapper`,
           equip: [],
+          modifier: "knife",
         });
         if (
           have($item`Everfull Dart Holster`) &&
